@@ -1,6 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 
 app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 class VirtualPet:
     def __init__(self, name, species):
@@ -55,6 +63,7 @@ def adopt_pet():
         '3': "Bunny",
         '4': "Bird"
     }
+
     species = species_map[choice]
     name = request.form['pet_name']
     pet = VirtualPet(name, species)
