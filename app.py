@@ -1,37 +1,70 @@
-from flask import Flask, render_template, request, redirect
-from virtual_pet import VirtualPet
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-@app.route('/home')
+class VirtualPet:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+        self.hunger = 0
+        self.happiness = 100
+
+    def feed(self):
+        self.hunger -= 10
+        if self.hunger < 0:
+            self.hunger = 0
+
+    def play(self):
+        self.happiness += 10
+        if self.happiness > 100:
+            self.happiness = 100
+
+    def status(self):
+        return {
+            "name": self.name,
+            "species": self.species,
+            "hunger": self.hunger,
+            "happiness": self.happiness
+        }
+
+@app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/adopt', methods=['GET', 'POST'])
+@app.route('/adopt', methods=['POST', 'GET'])
 def adopt_pet():
     if request.method == 'POST':
-        animal_choice = int(request.form['animal_choice'])
-        pet_name_prompt = f"What would you like to name your {'cat' if animal_choice == 1 else 'dog' if animal_choice == 2 else 'bunny' if animal_choice == 3 else 'bird'}?"
-        return render_template('name_pet.html', pet_name_prompt=pet_name_prompt)
+        choice = request.form['animal_choice']
+        species_map = {
+            '1': "Cat",
+            '2': "Dog",
+            '3': "Bunny",
+            '4': "Bird"
+        }
+
+        species = species_map[choice]
+        return render_template('name_pet.html', species=species)
     else:
-        return render_template('index.html')
+        # This block handles the GET request
+        animal_choice = request.args.get('animal_choice')
+        species_map = {
+            '1': "Cat",
+            '2': "Dog",
+            '3': "Bunny",
+            '4': "Bird"
+        }
 
-# Define routes for adopting specific animals
-@app.route('/adopt/cat', methods=['GET'])
-def adopt_cat():
-    return redirect('/adopt')
+        species = species_map[animal_choice]
+        pet_name_prompt = f"What would you like to name your {species.lower()}?"
+        return render_template('name_pet.html', pet_name_prompt=pet_name_prompt)
 
-@app.route('/adopt/dog', methods=['GET'])
-def adopt_dog():
-    return redirect('/adopt')
-
-@app.route('/adopt/bunny', methods=['GET'])
-def adopt_bunny():
-    return redirect('/adopt')
-
-@app.route('/adopt/bird', methods=['GET'])
-def adopt_bird():
-    return redirect('/adopt')
+@app.route('/confirm', methods=['POST'])
+def confirm_pet():
+    name = request.form['pet_name']
+    species = request.form['species']
+    pet = VirtualPet(name, species)
+    pet_info = pet.status()
+    return render_template('pet_info.html', pet_info=pet_info)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
