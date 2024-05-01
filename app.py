@@ -43,7 +43,7 @@ def adopt_pet():
         }
 
         species = species_map[choice]
-        return render_template('name_pet.html', species=species)
+        return render_template('name_pet.html', species=species, animal_choice=choice) # Pass species and animal_choice
     else:
         # This block handles the GET request
         animal_choice = request.args.get('animal_choice')
@@ -56,15 +56,38 @@ def adopt_pet():
 
         species = species_map[animal_choice]
         pet_name_prompt = f"What would you like to name your {species.lower()}?"
-        return render_template('name_pet.html', pet_name_prompt=pet_name_prompt)
+        return render_template('name_pet.html', pet_name_prompt=pet_name_prompt, animal_choice=animal_choice, species=species) # Pass species and animal_choice
 
+        
 @app.route('/confirm', methods=['POST'])
 def confirm_pet():
     name = request.form['pet_name']
     species = request.form['species']
+    phone_number = request.form['phone_number']
+    
+    # Store the user's phone number for future use
+    # You can store it in a session, database, or any other suitable storage mechanism
+    session['phone_number'] = phone_number
+
+@app.route('/feed', methods=['POST'])
+def feed_pet():
+    name = request.form['pet_name']
+    species = request.form['species']
     pet = VirtualPet(name, species)
+    pet.feed()
     pet_info = pet.status()
-    return render_template('pet_info.html', pet_info=pet_info)
+    phone_number = request.form['phone_number']
+    return render_template('pet_info.html', pet_info=pet_info, phone_number=phone_number)
+
+@app.route('/play', methods=['POST'])
+def play_with_pet():
+    name = request.form['pet_name']
+    species = request.form['species']
+    pet = VirtualPet(name, species)
+    pet.play()
+    pet_info = pet.status()
+    phone_number = request.form['phone_number']
+    return render_template('pet_info.html', pet_info=pet_info, phone_number=phone_number)
 
 if __name__ == '__main__':
     app.run(debug=False)

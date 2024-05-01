@@ -1,17 +1,24 @@
+<!-- name_pet.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Pet Adoption Center</title>
+    <title>Name Your Pet</title>
 </head>
 <body>
-    <h1>{{ pet_name_prompt }}</h1>
+    <h1>Name Your Pet</h1>
     <form action="/confirm" method="post">
-        <input type="hidden" name="species" value="{{ species }}">
-        <label for="pet_name">Enter your pet's name:</label>
-        <input type="text" id="pet_name" name="pet_name" required>
-        <input type="submit" value="Adopt">
+        <label for="pet_name">Pet Name:</label>
+        <input type="text" id="pet_name" name="pet_name" required><br><br>
+        
+        <label for="species">Species:</label>
+        <input type="text" id="species" name="species" value="{{ species }}" readonly><br><br>
+
+        <label for="phone_number">Your Phone Number:</label>
+        <input type="tel" id="phone_number" name="phone_number" required pattern="[0-9]{10}" placeholder="Enter your phone number"><br><br>
+        
+        <input type="submit" value="Confirm">
     </form>
 </body>
 </html>

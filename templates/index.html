@@ -1,20 +1,21 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Pet Adoption Center</title>
+    <title>Virtual Pet</title>
 </head>
 <body>
-    <h1>Welcome to the Virtual Pet Adoption Center!</h1>
-    <ul>
-    
-            <li><a href="/adopt?animal_choice=1">Adopt a Cat</a></li>
-            <li><a href="/adopt?animal_choice=2">Adopt a Dog</a></li>
-            <li><a href="/adopt?animal_choice=3">Adopt a Bunny</a></li>
-            <li><a href="/adopt?animal_choice=4">Adopt a Bird</a></li>
-    
-        
-    </ul>
+    <h1>Welcome to Virtual Pet!</h1>
+    <form action="/adopt" method="get">
+        <select name="animal_choice" required>
+            <option value="1">Cat</option>
+            <option value="2">Dog</option>
+            <option value="3">Bunny</option>
+            <option value="4">Bird</option>
+        </select>
+        <button type="submit">Adopt</button>
+    </form>
 </body>
 </html>
