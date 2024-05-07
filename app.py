@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import smtplib
-
+import secrets
 app = Flask(__name__)
 
-# Define your VirtualPet class here...
+app.secret_key = secrets.token_hex(16)
 class VirtualPet:
     def __init__(self, name, species):
         self.name = name
@@ -67,7 +67,6 @@ def confirm_pet():
     phone_number = request.form['phone_number']
     
     # Store the user's phone number for future use
-    # You can store it in a session, database, or any other suitable storage mechanism
     session['phone_number'] = phone_number
     
     # Send a message to the user's phone number
@@ -78,8 +77,8 @@ def confirm_pet():
 
 def send_sms(phone_number, message):
     # Configure your email and password
-    sender_email = "casemy13@gmail.com"
-    sender_password = "Ate031101"
+    sender_email = "ff4ngzz@gmail.com"
+    sender_password = "Hisd0107"
     
     # Compose the email message
     email_message = f"From: {sender_email}\nTo: {phone_number}@tmomail.com\nSubject: Virtual Pet Adoption\n\n{message}"
@@ -92,10 +91,10 @@ def send_sms(phone_number, message):
     server.login(sender_email, sender_password)
     
     # Send the email
-    server.sendmail(sender_email, f"{phone_number}@sms_gateway.com", email_message)
+    server.sendmail(sender_email, f"{phone_number}@tmomail.com", email_message)
     
     # Terminate the SMTP session
     server.quit()
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
