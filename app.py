@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import smtplib
 import secrets
-app = Flask(__name__)
 
+app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+
 class VirtualPet:
     def __init__(self, name, species):
         self.name = name
@@ -47,7 +48,6 @@ def adopt_pet():
         species = species_map[choice]
         return render_template('name_pet.html', species=species, animal_choice=choice) # Pass species and animal_choice
     else:
-        # This block handles the GET request
         animal_choice = request.args.get('animal_choice')
         species_map = {
             '1': "Cat",
@@ -66,35 +66,42 @@ def confirm_pet():
     species = request.form['species']
     phone_number = request.form['phone_number']
     
-    # Store the user's phone number for future use
     session['phone_number'] = phone_number
-    
-    # Send a message to the user's phone number
     send_sms(phone_number, f"Congratulations! You've adopted a {species} named {name}!")
     
-    # Redirect to another route after processing the form
     return redirect(url_for('home'))
 
 def send_sms(phone_number, message):
-    # Configure your email and password
-    sender_email = "ff4ngzz@gmail.com"
-    sender_password = "Hisd0107"
+    sender_email = "your_email@gmail.com"
+    sender_password = "your_email_password"
     
-    # Compose the email message
-    email_message = f"From: {sender_email}\nTo: {phone_number}@tmomail.com\nSubject: Virtual Pet Adoption\n\n{message}"
+    email_message = f"From: {sender_email}\nTo: {phone_number}@sms_gateway.com\nSubject: Virtual Pet Adoption\n\n{message}"
     
-    # Create an SMTP session
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    
-    # Log in to your Gmail account
     server.login(sender_email, sender_password)
-    
-    # Send the email
-    server.sendmail(sender_email, f"{phone_number}@tmomail.com", email_message)
-    
-    # Terminate the SMTP session
+    server.sendmail(sender_email, f"{phone_number}@sms_gateway.com", email_message)
     server.quit()
 
+@app.route('/feed', methods=['POST'])
+def feed_pet():
+    name = request.form['pet_name']
+    species = request.form['species']
+    pet = VirtualPet(name, species)
+    pet.feed()
+    pet_info = pet.status()
+    phone_number = request.form['phone_number']
+    return render_template('pet_info.html', pet_info=pet_info, phone_number=phone_number)
+
+@app.route('/play', methods=['POST'])
+def play_with_pet():
+    name = request.form['pet_name']
+    species = request.form['species']
+    pet = VirtualPet(name, species)
+    pet.play()
+    pet_info = pet.status()
+    phone_number = request.form['phone_number']
+    return render_template('pet_info.html', pet_info=pet_info, phone_number=phone_number)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
